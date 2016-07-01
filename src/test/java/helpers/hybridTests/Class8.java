@@ -1,13 +1,7 @@
 package helpers.hybridTests;
 
-
 import helpers.FacebookTestUserAccount;
 import helpers.FacebookTestUserStore;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -21,59 +15,30 @@ public class Class8 {
 
     public static String userEmail = "";
     public static String userPassw = "";
+    private FacebookTestUserAccount account;
+    private FacebookTestUserStore facebookstore;
 
 
-    @Test
-    public void test001Login() throws Exception {
-
-        // start the proxy
-//        ProxyServer server = new ProxyServer(4444);
-//        server.start();
-//
-//        // get the Selenium proxy object
-//        Proxy proxy = server.seleniumProxy();
-//
-//        // configure it as a desired capability
-//        DesiredCapabilities capabilities = new DesiredCapabilities();
-//        capabilities.setCapability(CapabilityType.PROXY, proxy);
-
-        getTheIdAndPassword();
-        
-        // start the browser up
-        WebDriver driver = new FirefoxDriver();
-
-        driver.navigate().to("https://www.instagram.com/");
-
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/span/button")));
-
-        driver.findElement(By.xpath(".//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/span/button")).click();
+   @Test
+   public void loginTest(){
 
 
-        driver.findElement(By.xpath(".//*[@id='email']")).sendKeys(userEmail);
 
-        driver.findElement(By.xpath(".//*[@id='pass']")).sendKeys(userPassw);
-
-        driver.findElement(By.xpath(".//*[@id='loginbutton']")).click();
-
-    }
-
+   }
 
 
     public void getTheIdAndPassword() throws IOException {
 
         Properties props = getFacebookConnectionProperties();
 
-        FacebookTestUserStore facebookstore = new FacebookTestUserStore(props.getProperty("facebook.appId1"), props.getProperty("facebook.appSecret1"));
+        facebookstore = new FacebookTestUserStore(props.getProperty("facebook.appId1"), props.getProperty("facebook.appSecret1"));
 
         facebookstore.deleteAllTestUsers();
 
-        FacebookTestUserAccount account = facebookstore.createTestUser(true, "read_stream,publish_actions,user_photos");
+        account = facebookstore.createTestUser(true, "read_stream,publish_actions,user_photos,user_about_me,email,user_status,read_custom_friendlists,user_friends,user_location,user_hometown");
 
         userEmail = account.getEmail();
         userPassw = account.getPassword();
-
-
     }
 
     private static Properties getFacebookConnectionProperties() throws IOException {
